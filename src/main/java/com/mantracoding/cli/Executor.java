@@ -78,4 +78,34 @@ public class Executor {
 
         return null;
     }
+
+    public String ExecuteTouch(String fileName){
+        if (fileSystemManager != null) {
+            try {
+                if(fileSystemManager.CreateFile(fileName))
+                    return "File <" + fileName + "> creato con successo";
+                else
+                    return "Il file esiste già";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    public String ExecuteRemove(String fileName){
+        if (fileSystemManager != null) {
+            try {
+                if(fileSystemManager.Remove(fileName))
+                    return "File/Cartella <" + fileName + "> eliminato con successo";
+                else
+                    return "Il è inesistente";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
 }

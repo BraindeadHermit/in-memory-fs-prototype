@@ -3,13 +3,15 @@ package com.mantracoding.filesystem;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileSystemManager {
 
@@ -71,20 +73,52 @@ public class FileSystemManager {
         return false;
     }
 
-    public String getAbsolutePath(String path){
-        if(fileSystem != null){
-            return fileSystem.getPath(path).toAbsolutePath().toString();
+    public boolean CreateFile(String fileName) throws IOException {
+        if (Files.notExists(fileSystem.getPath(currentPath, fileName))) {
+            Files.createFile(fileSystem.getPath(currentPath, fileName));
+            return true;
         }
 
-        return null;
+        return false;
+    }
+
+    public boolean Remove(String fileName) throws IOException {
+        if (fileSystem != null){
+            if (Files.exists(fileSystem.getPath(currentPath, fileName))){
+                if (Files.isDirectory(fileSystem.getPath(currentPath, fileName))){
+                    Stream<Path> toDel = Files.walk(fileSystem.getPath(currentPath, fileName));
+                    List<Path> l = toDel.collect(Collectors.toList());
+                    Collections.reverse(l);
+                    l.forEach(path -> {
+                        try {
+                            Files.delete(fileSystem.getPath(path.toString()));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } else {
+                    Files.delete(fileSystem.getPath(currentPath, fileName));
+                }
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public ArrayList<String> listContent() throws IOException {
         ArrayList<String> folderContent = new ArrayList<>();
 
-        Files.list(fileSystem.getPath(currentPath)).forEach(path -> {
-            folderContent.add(path.toString());
-        });
+        if (fileSystem != null) {
+            Files.list(fileSystem.getPath(currentPath)).forEach(path -> {
+                if (currentPath.equals("")) {
+                    folderContent.add(path.toString());
+                } else {
+                    int length = path.toString().split("\\\\").length;
+                    folderContent.add(path.toString().split("\\\\")[length - 1]);
+                }
+            });
+        }
 
         return folderContent;
     }
@@ -99,9 +133,5 @@ public class FileSystemManager {
                 System.err.println("Impossibile chiudere il FileSystem");
             }
         }
-    }
-
-    public boolean isOpen(){
-        return fileSystem.isOpen();
     }
 }

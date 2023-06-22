@@ -57,6 +57,14 @@ public class Main {
                         System.out.println("La cartella è vuota");
                     }
                 break;
+                case Commands.TOUCH:
+                    String file = executor.ExecuteTouch(command.split(" ")[1]);
+                    System.out.println(file);
+                break;
+                case Commands.RM:
+                    String del = executor.ExecuteRemove(command.split(" ")[1]);
+                    System.out.println(del);
+                break;
                 case Commands.HELP:
                     executor.ExecuteHelp();
                 break;
