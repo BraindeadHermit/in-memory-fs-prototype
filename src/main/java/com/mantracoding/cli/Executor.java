@@ -16,8 +16,11 @@ public class Executor {
 
     public void ExecuteHelp(){
         System.out.println("   - " + CliColors.ANSI_CYAN + Commands.INIT + CliColors.ANSI_RESET + ": per la creazione di un nuovo file system,\n" +
-                "       questo comanda andrà a creare un file sistem con un nome di defalult\n" +
-                "   - " + CliColors.ANSI_CYAN + Commands.MKDIR + " yourFolderName" + CliColors.ANSI_RESET + ": per la creazione di una cartella\n" +
+                "   - " + CliColors.ANSI_CYAN + Commands.MKDIR + " FolderName" + CliColors.ANSI_RESET + ": per la creazione di una cartella\n" +
+                "   - " + CliColors.ANSI_CYAN + Commands.CD + " FolderName" + CliColors.ANSI_RESET + ": per la entrare all'interno di una cartella\n" +
+                "   - " + CliColors.ANSI_CYAN + Commands.LS + CliColors.ANSI_RESET + ": per stampare una lista del contenuto della cartella\n" +
+                "   - " + CliColors.ANSI_CYAN + Commands.TOUCH + " FileName.Extension" + CliColors.ANSI_RESET + ": per la creazione di un file\n" +
+                "   - " + CliColors.ANSI_CYAN + Commands.RM + " FolderName/FileName" + CliColors.ANSI_RESET + ": per eliminare un file o una cartella insieme a tutto il suo contenuto\n" +
                 "   - " + CliColors.ANSI_CYAN + Commands.HELP + CliColors.ANSI_RESET + ": per stampare a video la lista dei comandi\n" +
                 "   - " + CliColors.ANSI_CYAN + Commands.EXIT + CliColors.ANSI_RESET + ": per uscire dal programma\n");
     }
