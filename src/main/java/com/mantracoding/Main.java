@@ -4,6 +4,7 @@ import com.mantracoding.cli.CliColors;
 import com.mantracoding.cli.Commands;
 import com.mantracoding.cli.Executor;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -22,17 +23,38 @@ public class Main {
         System.out.println("per avere accesso alla lista dei comandi ti basta digitare HELP!");
         System.out.println("--------------------------------------------------------------------------------------------------------");
 
+        String cmdLine = "Inserisci un Comando:";
+
         do{
-            System.out.println("Inserisci un Comando:");
+            System.out.print(cmdLine);
             String command = scanner.nextLine();
+            command = command.trim();
             scanner.reset();
             switch (command.toLowerCase().split(" ")[0]){
                 case Commands.INIT:
-                    if (command.split(" ").length > 1) {
-                        String name = command.split(" ")[2];
-                        executor.ExecuteInit(name);
+                    String root = executor.ExecuteInit();
+                    cmdLine = root + ">";
+                break;
+                case Commands.MKDIR:
+                    String dir = executor.ExecuteCreateDir(command.toLowerCase().split(" ")[1]);
+                    System.out.println(dir);
+                break;
+                case Commands.CD:
+                    String changedDir = executor.ExecuteChangeDir(command.split(" ")[1]);
+                    if (changedDir != null) {
+                        cmdLine = changedDir + ">";
                     } else {
-                        executor.ExecuteInit();
+                        System.out.println("Cartella inesistente");
+                    }
+                break;
+                case Commands.LS:
+                    ArrayList<String> list = executor.ExecuteListContent();
+                    if (list.size() != 0) {
+                        list.forEach(item -> {
+                            System.out.println("    \\" + item);
+                        });
+                    } else {
+                        System.out.println("La cartella è vuota");
                     }
                 break;
                 case Commands.HELP:

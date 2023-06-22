@@ -2,6 +2,9 @@ package com.mantracoding.cli;
 
 import com.mantracoding.filesystem.FileSystemManager;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class Executor {
 
     private FileSystemManager fileSystemManager;
@@ -13,11 +16,8 @@ public class Executor {
 
     public void ExecuteHelp(){
         System.out.println("   - " + CliColors.ANSI_CYAN + Commands.INIT + CliColors.ANSI_RESET + ": per la creazione di un nuovo file system,\n" +
-                "       questo comanda andrà a creare un file sistem con un nome di defalult, per assegnare tu un nome al tuo file system bisognerà eseguire:\n" +
-                "           - " + CliColors.ANSI_CYAN + Commands.INIT + " -name yourName" + CliColors.ANSI_RESET + "\n" +
-                "       ATTENZIONE! l'esecuzione multipla di questo comando non andrà a generare più file system, ma a sovreasrcivere quello esistente,\n" +
-                "       quindi se si hanno file salvati verranno automaticamente persi\n" +
-                "   - " + CliColors.ANSI_CYAN + "COMANDO 2" + CliColors.ANSI_RESET + ": per la ....\n" +
+                "       questo comanda andrà a creare un file sistem con un nome di defalult\n" +
+                "   - " + CliColors.ANSI_CYAN + Commands.MKDIR + " yourFolderName" + CliColors.ANSI_RESET + ": per la creazione di una cartella\n" +
                 "   - " + CliColors.ANSI_CYAN + Commands.HELP + CliColors.ANSI_RESET + ": per stampare a video la lista dei comandi\n" +
                 "   - " + CliColors.ANSI_CYAN + Commands.EXIT + CliColors.ANSI_RESET + ": per uscire dal programma\n");
     }
@@ -27,25 +27,55 @@ public class Executor {
         ProgramOn = false;
     }
 
-    public void ExecuteInit(){
+    public String ExecuteInit(){
         try {
             if (fileSystemManager == null) {
                 fileSystemManager = new FileSystemManager();
             }
+
+            return fileSystemManager.getRoot();
         } catch (Exception e){
             System.err.println("Impossibilie creare un file system in questo momento, errore sconosciuto");
             ExecuteExit();
         }
+
+        return "";
     }
 
-    public void ExecuteInit(String name){
-        try {
-            if(fileSystemManager == null) {
-                fileSystemManager = new FileSystemManager(name);
+    public String ExecuteCreateDir(String path){
+        try{
+            if (fileSystemManager.createDir(path)){
+                return "Cartella <" + path + "> creata con successo!";
+            } else {
+                return "Cartella già esistente";
             }
-        } catch (Exception e){
-            System.err.println("Impossibilie creare un file system in questo momento, errore sconosciuto");
-            ExecuteExit();
+        }catch (IOException e){
+            e.printStackTrace();
         }
+
+        return null;
+    }
+
+    public String ExecuteChangeDir(String path){
+        if (fileSystemManager != null){
+            if (fileSystemManager.SwitchDir(path))
+                return fileSystemManager.getCurrentPath();
+            else
+                return null;
+        }
+
+        return null;
+    }
+
+    public ArrayList<String> ExecuteListContent(){
+        if (fileSystemManager != null){
+            try {
+                return fileSystemManager.listContent();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 }
